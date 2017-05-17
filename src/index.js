@@ -48,6 +48,17 @@ export default function blockBreakoutPlugin (options = {}) {
   const breakoutBlocks = options.breakoutBlocks || defaults.breakoutBlocks
   const doubleBreakoutBlocks = options.doubleBreakoutBlocks || defaults.doubleBreakoutBlocks
 
+  // Warn if a block is redundantly specified
+  breakoutBlocks.concat(doubleBreakoutBlocks).reduce((acc, cur) => {
+    if (acc[cur]) {
+      console.error(
+        'The block `' + cur + '` was redundantly specified in `breakoutBlocks`' +
+        ' as well as `doubleBreakoutBlocks`. This is probably an error.')
+    }
+    acc[cur] = true
+    return acc
+  }, {})
+
   return {
     handleReturn (e, { getEditorState, setEditorState }) {
       const editorState = getEditorState()
@@ -92,15 +103,15 @@ export default function blockBreakoutPlugin (options = {}) {
             // Choose which order to apply the augmented blocks in depending
             // on whether we’re at the start or the end
             if (atEndOfBlock) {
-              if (isDoubleBreakoutBlock) {
-                // Discard Current as it was blank
-                augmentedBlocks = [
-                  [emptyBlockKey, emptyBlock],
-                ]
-              } else {
+              if (isSingleBreakoutBlock) {
                 // Current first, empty block afterwards
                 augmentedBlocks = [
                   [currentBlock.getKey(), currentBlock],
+                  [emptyBlockKey, emptyBlock],
+                ]
+              } else {
+                // Discard Current as it was blank
+                augmentedBlocks = [
                   [emptyBlockKey, emptyBlock],
                 ]
               }
