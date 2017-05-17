@@ -17,7 +17,7 @@ test('it should break out of `breakoutBlocks`', (t) => {
   const contentState = ContentState.createFromBlockArray([new ContentBlock({
     key: '1',
     type: 'header-one',
-    text: 'test'
+    text: 'test',
   })])
   let editorState = EditorState.moveSelectionToEnd(
     EditorState.createWithContent(contentState))
@@ -39,7 +39,7 @@ test('it prints an error when a block is redundantly specified', (t) => {
   console.error = (e) => errors.push(e)
   createBlockBreakoutPlugin({
     breakoutBlocks: ['blockquote'],
-    doubleBreakoutBlocks: ['blockquote']
+    doubleBreakoutBlocks: ['blockquote'],
   })
   t.equal(errors.length, 1)
   t.equal(errors[0], 'The block `blockquote` was redundantly specified in `breakoutBlocks` as well as `doubleBreakoutBlocks`. This is probably an error.')
@@ -49,16 +49,15 @@ test('it prints an error when a block is redundantly specified', (t) => {
 
 test('it treats a block is a regular breakout block if it is redundantly specified', (t) => {
   const originalConsoleError = console.error
-  const errors = []
   console.error = () => {}
   const {handleReturn} = createBlockBreakoutPlugin({
     breakoutBlocks: ['blockquote'],
-    doubleBreakoutBlocks: ['blockquote']
+    doubleBreakoutBlocks: ['blockquote'],
   })
   const contentState = ContentState.createFromBlockArray([new ContentBlock({
     key: '1',
     type: 'blockquote',
-    text: 'test'
+    text: 'test',
   })])
   let editorState = EditorState.moveSelectionToEnd(
     EditorState.createWithContent(contentState))
